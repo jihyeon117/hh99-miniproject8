@@ -1,6 +1,6 @@
 package com.example.hh99miniproject8.entity;
 
-import com.example.hh99miniproject8.dto.user.SignupReqeustDto;
+import com.example.hh99miniproject8.dto.user.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ public class User {
     private String address;
     private String nickname;
 
-    public User(SignupReqeustDto requst, RoleTypeEnum role) {
+    public User(SignupRequestDto requst, RoleTypeEnum role) {
         this.username = requst.getUsername();
         this.password = requst.getPassword();
         this.role = role;

@@ -5,11 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class SignupReqeustDto {
+public class LoginRequestDto {
     private String username;
     private String password;
-    private String nickname;
-    private String address;
-    private String authKey;
-    private boolean isAdmin;
 }
