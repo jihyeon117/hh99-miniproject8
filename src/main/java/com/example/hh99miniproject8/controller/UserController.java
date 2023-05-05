@@ -1,6 +1,7 @@
 package com.example.hh99miniproject8.controller;
 
-import com.example.hh99miniproject8.dto.user.SignupReqeustDto;
+import com.example.hh99miniproject8.dto.user.LoginRequestDto;
+import com.example.hh99miniproject8.dto.user.SignupRequestDto;
 import com.example.hh99miniproject8.dto.user.SignupResponseDto;
 import com.example.hh99miniproject8.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public SignupResponseDto signup(@RequestBody SignupReqeustDto reqeust){
+    public SignupResponseDto signup(@RequestBody SignupRequestDto reqeust){
         return userService.signup(reqeust);
+    }
+
+    @PostMapping("/login")
+    public void login(@RequestBody LoginRequestDto request){
+        userService.login(request);
     }
 }
