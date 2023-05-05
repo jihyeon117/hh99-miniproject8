@@ -1,6 +1,6 @@
 package com.example.hh99miniproject8.service;
 
-import com.example.hh99miniproject8.dto.user.LoginReqeustDto;
+import com.example.hh99miniproject8.dto.user.LoginRequestDto;
 import com.example.hh99miniproject8.dto.user.SignupReqeustDto;
 import com.example.hh99miniproject8.dto.user.SignupResponseDto;
 import com.example.hh99miniproject8.entity.RoleTypeEnum;
@@ -8,8 +8,6 @@ import com.example.hh99miniproject8.entity.User;
 import com.example.hh99miniproject8.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +33,7 @@ public class UserService {
         return new SignupResponseDto("회원가입에 성공하셨습니다.");
     }
 
-    public void login(LoginReqeustDto reqeust) {
+    public void login(LoginRequestDto reqeust) {
         // 입력한 ID를 기반으로 회원 존재 유무 체크
         User user = userRepository.findByUsername(reqeust.getUsername()).orElseThrow(
                 () -> new NullPointerException("회원이 존재하지 않습니다.")

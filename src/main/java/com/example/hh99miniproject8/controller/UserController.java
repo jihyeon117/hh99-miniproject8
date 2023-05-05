@@ -1,6 +1,6 @@
 package com.example.hh99miniproject8.controller;
 
-import com.example.hh99miniproject8.dto.user.LoginReqeustDto;
+import com.example.hh99miniproject8.dto.user.LoginRequestDto;
 import com.example.hh99miniproject8.dto.user.SignupReqeustDto;
 import com.example.hh99miniproject8.dto.user.SignupResponseDto;
 import com.example.hh99miniproject8.service.UserService;
@@ -21,7 +21,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public void login(@RequestBody LoginReqeustDto reqeust){
+    public void login(@RequestBody LoginRequestDto reqeust){
         userService.login(reqeust);
     }
 }
