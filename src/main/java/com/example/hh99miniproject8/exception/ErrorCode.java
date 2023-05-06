@@ -19,7 +19,8 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND,"회원을 찾을 수 없습니다."),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND,"게시글을 찾을 수 없습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND,"댓글을 찾을 수 없습니다."),
-    AUTHKEY_NOT_FOUND(HttpStatus.NOT_FOUND, "관리자 인증키를 입력하지 않았습니다.");
+    AUTHKEY_NOT_FOUND(HttpStatus.NOT_FOUND, "관리자 인증키를 입력하지 않았습니다."),
+    JWT_REFRESH_EXPRIED(HttpStatus.NOT_FOUND, "refreshToken이 만료되었습니다.");
 
     private final HttpStatus httpStatus;
     private final String errorMessage;
