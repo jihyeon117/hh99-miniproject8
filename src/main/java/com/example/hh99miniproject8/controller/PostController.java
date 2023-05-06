@@ -3,6 +3,7 @@ package com.example.hh99miniproject8.controller;
 import com.example.hh99miniproject8.dto.post.PostRequestDto;
 import com.example.hh99miniproject8.dto.post.PostResponseDto;
 import com.example.hh99miniproject8.service.PostService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

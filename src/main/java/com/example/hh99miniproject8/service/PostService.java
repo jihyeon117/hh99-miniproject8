@@ -5,7 +5,10 @@ import com.example.hh99miniproject8.dto.post.PostResponseDto;
 import com.example.hh99miniproject8.entity.Post;
 import com.example.hh99miniproject8.exception.CustomException;
 import com.example.hh99miniproject8.repository.PostRepository;
+import com.example.hh99miniproject8.security.jwt.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,9 +24,11 @@ import static com.example.hh99miniproject8.exception.ErrorCode.POST_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PostService {
 
     private final PostRepository postRepository;
+    private final JwtUtil jwtUtil;
 
     //게시글 생성 API
     @Transactional
@@ -63,7 +68,6 @@ public class PostService {
         );
         post.update(requestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(new PostResponseDto(post));
-
     }
 
     //게시글 삭제 API
