@@ -35,12 +35,9 @@ public class Post extends Timestamped {
     private User user;
 
 
-    public Post(PostRequestDto postRequestDto, List<Comment> comments, User user) {
+    public Post(PostRequestDto postRequestDto, User user) {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
-        this.category = postRequestDto.getCategory();
-        //this.goodCount = goodCount;
-        this.comments = comments;
         this.user = user;
     }
 
