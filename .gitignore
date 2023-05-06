@@ -18,8 +18,7 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-.idea/misc.xml
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
