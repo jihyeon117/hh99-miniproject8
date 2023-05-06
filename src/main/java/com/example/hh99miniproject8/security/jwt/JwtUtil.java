@@ -96,7 +96,7 @@ public class JwtUtil {
 
     // 토큰에서 사용자 정보 반환
     public Claims getUserInfoFromToken(String token){
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJwt(token).getBody();
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
 

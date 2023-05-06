@@ -21,8 +21,8 @@ public class PostController {
 
     //게시글 생성 API
     @PostMapping("/post")
-    public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto requestDTO) {
-        return postservice.createPost(requestDTO);
+    public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto requestDTO, HttpServletRequest httpServletRequest) {
+        return postservice.createPost(requestDTO, httpServletRequest);
     }
 
     //게시글 전체 조회 API
@@ -39,14 +39,14 @@ public class PostController {
 
     //게시글 수정 API
     @PutMapping("/post/{id}")
-    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDTO) {
-        return postservice.updatePost(id, requestDTO);
+    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDTO, HttpServletRequest httpServletRequest) {
+        return postservice.updatePost(id, requestDTO, httpServletRequest);
     }
 
     //게시글 삭제 API
     @DeleteMapping("/post/{id}")
-    public ResponseEntity<String> deletePost(@PathVariable Long id) {
-        return postservice.deletePost(id);
+    public ResponseEntity<String> deletePost(@PathVariable Long id, HttpServletRequest httpServletRequest) {
+        return postservice.deletePost(id, httpServletRequest);
     }
 
 

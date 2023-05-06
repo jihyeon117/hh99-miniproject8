@@ -6,27 +6,48 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @Getter
 public class Post extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id")
     private Long id;
+
     private String title;
+
     private String content;
-    @ColumnDefault("0")
-    private int goodCount;
+
     private String category;
 
-    public Post(PostRequestDto request) {
-        this.title = request.getTitle();
-        this.content = request.getContent();
-        this.category = request.getCategory();
+    @ColumnDefault("0")
+    private int goodCount;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    @OrderBy("createdAt desc")
+    private List<Comment> comments;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+
+    public Post(PostRequestDto postRequestDto, List<Comment> comments, User user) {
+        this.title = postRequestDto.getTitle();
+        this.content = postRequestDto.getContent();
+        this.category = postRequestDto.getCategory();
+        //this.goodCount = goodCount;
+        this.comments = comments;
+        this.user = user;
     }
 
-    public void update(PostRequestDto request) {
-        this.title = request.getTitle();
-        this.content = request.getContent();
+    public void update(PostRequestDto postRequestDto, User user) {
+        this.title = postRequestDto.getTitle();
+        this.content = postRequestDto.getContent();
+        this.category = postRequestDto.getCategory();
+        this.user = user;
     }
 }
