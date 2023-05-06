@@ -7,18 +7,21 @@ import com.example.hh99miniproject8.entity.User;
 import com.example.hh99miniproject8.exception.CustomException;
 import com.example.hh99miniproject8.exception.ErrorCode;
 import com.example.hh99miniproject8.repository.UserRepository;
-import com.example.hh99miniproject8.security.jwt.JwtUtil;
+import com.example.hh99miniproject8.security.jwt.JwtService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final JwtUtil jwtUtil;
+    private final JwtService jwtService;
+//    private final JwtUtil jwtUtil;
+
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
     public ResponseEntity<String> signup(SignupRequestDto reqeust) {
         // 아이디 중복 체크
@@ -39,18 +42,30 @@ public class UserService {
         return ResponseEntity.status(HttpStatus.OK).body("회원가입 성공!");
     }
 
+    @Transactional
     public ResponseEntity<String> login(LoginRequestDto request, HttpServletResponse response) {
         // 입력한 ID를 기반으로 회원 존재 유무 체크
         User user = userRepository.findByUsername(request.getUsername()).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
-
         // 비밀번호 일치여부 체크
         if(!user.getPassword().equals(request.getPassword())){
             throw new CustomException(ErrorCode.INVALIED_PASSWORD);
         }
 
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user.getRole()));
+        // accesstoken, refreshtoken 발급
+        String accessToken = jwtService.createAccessToken(user.getUsername(), user.getRole());
+        String refreshToken = jwtService.createRefreshToken();
+
+        // 로그인 성공시 client에게 acces, refresh 토큰 header에 넣어서 반환
+        // header에서 꺼내서 사용할떄 ex) response.getHeader("AUTHORIZATION");
+        response.setHeader("AUTHORIZATION", accessToken);
+        response.setHeader("REFRESHTOKEN", refreshToken);
+
+        // 로그인 성공시 해당 user에게 refreshToken값의 상태를 주입 (로그인 상태 저장)
+        jwtService.setRefreshToken(user.getUsername(), refreshToken);
+
+//        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken, refreshToken);
         return ResponseEntity.status(HttpStatus.OK).body("로그인 성공!");
     }
 }

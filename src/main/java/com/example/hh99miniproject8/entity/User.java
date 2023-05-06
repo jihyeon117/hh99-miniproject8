@@ -4,6 +4,7 @@ import com.example.hh99miniproject8.dto.user.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity(name = "users")
 @NoArgsConstructor
@@ -18,6 +19,7 @@ public class User {
     private RoleTypeEnum role;
     private String address;
     private String nickname;
+    private String refreshtoken;
 
     public User(SignupRequestDto requst, RoleTypeEnum role) {
         this.username = requst.getUsername();
@@ -25,5 +27,9 @@ public class User {
         this.role = role;
         this.address = requst.getAddress();
         this.nickname = requst.getNickname();
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshtoken = refreshToken;
     }
 }
