@@ -57,7 +57,7 @@ public class JwtUtil {
     // 토큰 유효성 검사 메서드
     public boolean vaildateToken(String token){
         try{
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJwt(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
@@ -73,7 +73,7 @@ public class JwtUtil {
 
     // 토큰에서 사용자 정보 반환
     public Claims getUserInfoFromToken(String token){
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJwt(token).getBody();
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
     @PostConstruct

@@ -11,19 +11,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @Getter
 public class Comment extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "comment_id")
     private Long id;
     private String content;
     private String address;
-
-    public Comment(CommentRequestDto request) {
-        this.content = request.getContent();
-    }
 
     public void update(CommentRequestDto request) {
         this.content = request.getContent();
@@ -32,5 +31,23 @@ public class Comment extends Timestamped {
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+
+
+    public Comment(CommentRequestDto commentRequestDto, User user) {
+        this.content = commentRequestDto.getContent();
+        this.address = user.getAddress();
+        this.user = user;
+    }
+
+    public void update(CommentRequestDto commentRequestDto, User user) {
+        this.content = commentRequestDto.getContent();
+        this.address = user.getAddress();
+        this.user = user;
+    }
 
 }
