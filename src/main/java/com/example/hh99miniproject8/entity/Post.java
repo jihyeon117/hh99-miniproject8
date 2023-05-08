@@ -9,8 +9,8 @@ import org.hibernate.annotations.ColumnDefault;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 public class Post extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,10 +34,12 @@ public class Post extends Timestamped {
     @JoinColumn(name = "user_id")
     private User user;
 
-
-    public Post(PostRequestDto postRequestDto, User user) {
+    public Post(PostRequestDto postRequestDto, List<Comment> comments, User user) {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
+        this.category = postRequestDto.getCategory();
+        //this.goodCount = goodCount;
+        this.comments = comments;
         this.user = user;
     }
 
