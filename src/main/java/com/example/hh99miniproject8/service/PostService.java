@@ -9,12 +9,15 @@ import com.example.hh99miniproject8.exception.CustomException;
 import com.example.hh99miniproject8.repository.PostRepository;
 import com.example.hh99miniproject8.repository.UserRepository;
 import com.example.hh99miniproject8.security.jwt.JwtProvider;
+import com.example.hh99miniproject8.security.jwt.JwtService;
+import com.example.hh99miniproject8.security.jwt.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
@@ -38,9 +41,8 @@ public class PostService {
 
     //게시글 생성 API
     @Transactional
-    public ResponseEntity<PostResponseDto> createPost(PostRequestDto requestDTO, HttpServletRequest httpServletRequest) {
-        User user = tokenCheck(httpServletRequest);
-        Post post = postRepository.saveAndFlush(new Post(requestDTO, user));
+    public ResponseEntity<PostResponseDto> createPost(PostRequestDto requestDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Post post = postRepository.saveAndFlush(new Post(requestDTO, userDetails.getUser()));
         return ResponseEntity.status(HttpStatus.CREATED).body(new PostResponseDto(post));
     }
 

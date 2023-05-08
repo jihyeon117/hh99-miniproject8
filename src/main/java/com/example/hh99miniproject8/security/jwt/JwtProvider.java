@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -29,7 +28,7 @@ import java.util.Objects;
 @Component
 @RequiredArgsConstructor
 public class JwtProvider {
-    private final UserDetailsService userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
     public static final String AUTHORIZATION_KEY = "auth";
 //    public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER_PREFIX = "Bearer ";
@@ -129,6 +128,7 @@ public class JwtProvider {
             // parserBuilder() : jwtTokenBuiler를 반환
             // setSigningKey   : signatureAlgorithm에 사용할 key를 setting
             // parseClaimsJws(token)
+            log.info(claims.getBody().get("auth").toString());
             return !claims.getBody().getExpiration().before(new Date());
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
