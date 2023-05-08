@@ -78,13 +78,8 @@ public class JwtUtil {
     }
 
     // 토큰 유효성 검사 메서드
-<<<<<<< HEAD
-    public boolean vaildateToken(String token){
-        try{
-=======
     public boolean validateToken(String token) {
         try {
->>>>>>> f46d03eaba1be684d2a41d6f0d47679e96683103
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
