@@ -2,6 +2,7 @@ package com.example.hh99miniproject8.controller;
 
 import com.example.hh99miniproject8.dto.user.LoginRequestDto;
 import com.example.hh99miniproject8.dto.user.SignupRequestDto;
+import com.example.hh99miniproject8.entity.Token;
 import com.example.hh99miniproject8.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class UserController{
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequestDto request, HttpServletResponse httpResponse){
+    public ResponseEntity<Token> login(@RequestBody LoginRequestDto request, HttpServletResponse httpResponse){
        return userService.login(request, httpResponse);
     }
 }
