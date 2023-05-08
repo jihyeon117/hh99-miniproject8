@@ -36,7 +36,8 @@ public class CommentService {
     @Transactional
     public ResponseEntity<CommentResponseDto> createComment(Long id, CommentRequestDto requestDTO, HttpServletRequest httpServletRequest) {
         User user = tokenCheck(httpServletRequest);
-        Comment comment = commentRepository.save(new Comment(requestDTO, user));
+        Post post = checkPost(id);
+        Comment comment = commentRepository.save(new Comment(requestDTO, user, post));
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommentResponseDto(comment));
 
     }
