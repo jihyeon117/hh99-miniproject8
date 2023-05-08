@@ -41,8 +41,8 @@ public class PostService {
 
     //게시글 생성 API
     @Transactional
-    public ResponseEntity<PostResponseDto> createPost(PostRequestDto requestDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        Post post = postRepository.saveAndFlush(new Post(requestDTO, userDetails.getUser()));
+    public ResponseEntity<PostResponseDto> createPost(PostRequestDto requestDTO, User user) {
+        Post post = postRepository.saveAndFlush(new Post(requestDTO, user));
         return ResponseEntity.status(HttpStatus.CREATED).body(new PostResponseDto(post));
     }
 
@@ -72,8 +72,7 @@ public class PostService {
 
     //게시글 수정 API
     @Transactional
-    public ResponseEntity<PostResponseDto> updatePost(Long id, PostRequestDto requestDTO, HttpServletRequest httpServletRequest) {
-        User user = tokenCheck(httpServletRequest);
+    public ResponseEntity<PostResponseDto> updatePost(Long id, PostRequestDto requestDTO, User user) {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new CustomException(POST_NOT_FOUND)
         );
@@ -83,8 +82,7 @@ public class PostService {
 
     //게시글 삭제 API
     @Transactional
-    public ResponseEntity<String> deletePost(Long id, HttpServletRequest httpServletRequest) {
-        User user = tokenCheck(httpServletRequest);
+    public ResponseEntity<String> deletePost(Long id, User user) {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new CustomException(POST_NOT_FOUND)
         );
@@ -93,26 +91,4 @@ public class PostService {
         return ResponseEntity.status(HttpStatus.OK).body("게시글 식제 성공");
 
     }
-
-    // 토큰 검사
-    public User tokenCheck(HttpServletRequest httpServletRequest) {
-        String token = jwtProvider.resolveAccessToken(httpServletRequest);
-        Claims claims;
-
-        if (token != null) {
-            if (jwtProvider.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtProvider.getUserInfoFromToken(token);
-            } else {
-                throw new CustomException(TOKEN_NOT_FOUND);
-            }
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new CustomException(USER_NOT_FOUND)
-            );
-            return user;
-        }
-        return null;
-    }
-
-
 }
