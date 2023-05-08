@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,8 +33,8 @@ public class PostResponseDto {
         this.createdAt = post.getCreatedAt();
         this.modifiedAt = post.getModifiedAt();
         this.category = post.getCategory();
-        if(post.getComments() == null) {
-            this.comments = null;
+        if (post.getComments() == null) {
+            this.comments = Collections.emptyList();
         } else {
             this.comments = post.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
         }

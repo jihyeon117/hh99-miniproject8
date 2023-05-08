@@ -44,10 +44,11 @@ public class PostService {
         return ResponseEntity.status(HttpStatus.CREATED).body(new PostResponseDto(post));
     }
 
+
     //게시글 전체 조회 API
     @Transactional(readOnly = true)
     public ResponseEntity<Map<String, List<PostResponseDto>>> listPosts() {
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = postRepository.findAllByOrderByModifiedAtDesc();
         List<PostResponseDto> postList = new ArrayList<>();
         for(Post post : posts) {
             postList.add(new PostResponseDto(post));
