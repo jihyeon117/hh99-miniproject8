@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping
 @RequiredArgsConstructor
 public class PostController {
 
@@ -20,31 +20,31 @@ public class PostController {
 
 
     //게시글 생성 API
-    @PostMapping("/post")
+    @PostMapping("/posts")
     public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto requestDTO, HttpServletRequest httpServletRequest) {
         return postservice.createPost(requestDTO, httpServletRequest);
     }
 
     //게시글 전체 조회 API
-    @GetMapping("/post")
+    @GetMapping("/posts")
     public ResponseEntity<Map<String, List<PostResponseDto>>> listPosts() {
         return postservice.listPosts();
     }
 
     //게시글 단일 조회 API
-    @GetMapping("/post/{id}")
+    @GetMapping("/posts/{id}")
     public ResponseEntity<PostResponseDto> singlePost(@PathVariable Long id) {
         return postservice.singlePost(id);
     }
 
     //게시글 수정 API
-    @PutMapping("/post/{id}")
+    @PutMapping("/posts/{id}")
     public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDTO, HttpServletRequest httpServletRequest) {
         return postservice.updatePost(id, requestDTO, httpServletRequest);
     }
 
     //게시글 삭제 API
-    @DeleteMapping("/post/{id}")
+    @DeleteMapping("/posts/{id}")
     public ResponseEntity<String> deletePost(@PathVariable Long id, HttpServletRequest httpServletRequest) {
         return postservice.deletePost(id, httpServletRequest);
     }

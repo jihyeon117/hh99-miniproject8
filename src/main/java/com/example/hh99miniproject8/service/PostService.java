@@ -27,8 +27,6 @@ import static com.example.hh99miniproject8.exception.ErrorCode.TOKEN_NOT_FOUND;
 import static com.example.hh99miniproject8.exception.ErrorCode.USER_NOT_FOUND;
 
 
-
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -42,8 +40,7 @@ public class PostService {
     @Transactional
     public ResponseEntity<PostResponseDto> createPost(PostRequestDto requestDTO, HttpServletRequest httpServletRequest) {
         User user = tokenCheck(httpServletRequest);
-        List<Comment> comments = new ArrayList<>();
-        Post post = postRepository.save(new Post(requestDTO, comments, user));
+        Post post = postRepository.saveAndFlush(new Post(requestDTO, user));
         return ResponseEntity.status(HttpStatus.CREATED).body(new PostResponseDto(post));
     }
 
@@ -106,13 +103,10 @@ public class PostService {
             } else {
                 throw new CustomException(TOKEN_NOT_FOUND);
             }
-
-            // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
             User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
                     () -> new CustomException(USER_NOT_FOUND)
             );
             return user;
-
         }
         return null;
     }

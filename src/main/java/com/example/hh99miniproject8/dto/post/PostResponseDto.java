@@ -1,5 +1,7 @@
 package com.example.hh99miniproject8.dto.post;
 
+import com.example.hh99miniproject8.dto.comment.CommentResponseDto;
+import com.example.hh99miniproject8.entity.Comment;
 import com.example.hh99miniproject8.entity.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,8 +21,8 @@ public class PostResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private String category;
+    private List<CommentResponseDto> comments;
     private int goodCount;
-    //private List<CommentResponseDTO> comments;
 
     public PostResponseDto(Post post) {
         this.id = post.getId();
@@ -30,9 +32,12 @@ public class PostResponseDto {
         this.createdAt = post.getCreatedAt();
         this.modifiedAt = post.getModifiedAt();
         this.category = post.getCategory();
+        if(post.getComments() == null) {
+            this.comments = null;
+        } else {
+            this.comments = post.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
+        }
         this.goodCount = post.getGoodCount();
-        //this.comments = post.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
     }
-
 
 }
