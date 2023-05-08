@@ -1,7 +1,10 @@
 package com.example.hh99miniproject8.entity;
 
+import com.example.hh99miniproject8.dto.comment.CommentResponseDto;
 import com.example.hh99miniproject8.dto.post.PostRequestDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -18,10 +21,13 @@ public class Post extends Timestamped {
     @Column(name = "post_id")
     private Long id;
 
+    @NotNull
     private String title;
 
+    @NotNull
     private String content;
 
+    @NotNull
     private String category;
 
     @ColumnDefault("0")
