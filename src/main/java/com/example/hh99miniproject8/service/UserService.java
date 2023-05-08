@@ -3,10 +3,12 @@ package com.example.hh99miniproject8.service;
 import com.example.hh99miniproject8.dto.user.LoginRequestDto;
 import com.example.hh99miniproject8.dto.user.SignupRequestDto;
 import com.example.hh99miniproject8.entity.RoleTypeEnum;
+import com.example.hh99miniproject8.entity.Token;
 import com.example.hh99miniproject8.entity.User;
 import com.example.hh99miniproject8.exception.CustomException;
 import com.example.hh99miniproject8.exception.ErrorCode;
 import com.example.hh99miniproject8.repository.UserRepository;
+import com.example.hh99miniproject8.security.jwt.JwtProvider;
 import com.example.hh99miniproject8.security.jwt.JwtService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
-//    private final JwtUtil jwtUtil;
+    private final JwtProvider jwtProvider;
 
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
     public ResponseEntity<String> signup(SignupRequestDto reqeust) {
@@ -43,7 +45,7 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<String> login(LoginRequestDto request, HttpServletResponse response) {
+    public ResponseEntity<Token> login(LoginRequestDto request, HttpServletResponse response) {
         // 입력한 ID를 기반으로 회원 존재 유무 체크
         User user = userRepository.findByUsername(request.getUsername()).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_NOT_FOUND)
@@ -54,8 +56,9 @@ public class UserService {
         }
 
         // accesstoken, refreshtoken 발급
-        String accessToken = jwtService.createAccessToken(user.getUsername(), user.getRole());
-        String refreshToken = jwtService.createRefreshToken();
+        Token tokenDto = jwtProvider.createToken(user.getUsername(), user.getRole());
+        String accessToken = tokenDto.getAccessToken();
+        String refreshToken = tokenDto.getRefreshToken();
 
         // 로그인 성공시 client에게 acces, refresh 토큰 header에 넣어서 반환
         // header에서 꺼내서 사용할떄 ex) response.getHeader("AUTHORIZATION");
@@ -63,9 +66,9 @@ public class UserService {
         response.setHeader("REFRESHTOKEN", refreshToken);
 
         // 로그인 성공시 해당 user에게 refreshToken값의 상태를 주입 (로그인 상태 저장)
-        jwtService.setRefreshToken(user.getUsername(), refreshToken);
+        jwtService.setRefreshToken(user, refreshToken);
 
-//        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken, refreshToken);
-        return ResponseEntity.status(HttpStatus.OK).body("로그인 성공!");
+//        response.addHeader(JwtProvider.AUTHORIZATION_HEADER, accessToken, refreshToken);
+        return ResponseEntity.status(HttpStatus.OK).body(tokenDto);
     }
 }
