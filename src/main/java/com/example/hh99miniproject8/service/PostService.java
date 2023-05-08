@@ -12,6 +12,7 @@ import com.example.hh99miniproject8.security.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import static com.example.hh99miniproject8.exception.ErrorCode.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PostService {
 
     private final PostRepository postRepository;
@@ -37,7 +39,7 @@ public class PostService {
     //게시글 생성 API
     @Transactional
     public ResponseEntity<PostResponseDto> createPost(PostRequestDto requestDTO, HttpServletRequest httpServletRequest) {
-        User user = checkToken(httpServletRequest);
+        User user = tokenCheck(httpServletRequest);
         List<Comment> comments = new ArrayList<>();
         Post post = postRepository.save(new Post(requestDTO, comments, user));
         return ResponseEntity.status(HttpStatus.CREATED).body(new PostResponseDto(post));
@@ -69,19 +71,18 @@ public class PostService {
     //게시글 수정 API
     @Transactional
     public ResponseEntity<PostResponseDto> updatePost(Long id, PostRequestDto requestDTO, HttpServletRequest httpServletRequest) {
-        User user = checkToken(httpServletRequest);
+        User user = tokenCheck(httpServletRequest);
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new CustomException(POST_NOT_FOUND)
         );
         post.update(requestDTO, user);
         return ResponseEntity.status(HttpStatus.OK).body(new PostResponseDto(post));
-
     }
 
     //게시글 삭제 API
     @Transactional
     public ResponseEntity<String> deletePost(Long id, HttpServletRequest httpServletRequest) {
-        User user = checkToken(httpServletRequest);
+        User user = tokenCheck(httpServletRequest);
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new CustomException(POST_NOT_FOUND)
         );
@@ -92,12 +93,13 @@ public class PostService {
     }
 
     // 토큰 검사
-    public User checkToken(HttpServletRequest httpServletRequest) {
-        String token = jwtUtil.resolveToken(httpServletRequest);
+    public User tokenCheck(HttpServletRequest httpServletRequest) {
+        String token = jwtUtil.resolveAccessToken(httpServletRequest);
         Claims claims;
 
         if (token != null) {
-            if (jwtUtil.vaildateToken(token)) {
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
                 claims = jwtUtil.getUserInfoFromToken(token);
             } else {
                 throw new CustomException(TOKEN_NOT_FOUND);
