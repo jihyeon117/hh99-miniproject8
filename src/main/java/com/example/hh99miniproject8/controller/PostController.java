@@ -2,15 +2,19 @@ package com.example.hh99miniproject8.controller;
 
 import com.example.hh99miniproject8.dto.post.PostRequestDto;
 import com.example.hh99miniproject8.dto.post.PostResponseDto;
+import com.example.hh99miniproject8.security.jwt.UserDetailsImpl;
 import com.example.hh99miniproject8.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
@@ -21,8 +25,8 @@ public class PostController {
 
     //게시글 생성 API
     @PostMapping("/posts")
-    public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto requestDTO, HttpServletRequest httpServletRequest) {
-        return postservice.createPost(requestDTO, httpServletRequest);
+    public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto requestDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return postservice.createPost(requestDTO, userDetails);
     }
 
     //게시글 전체 조회 API

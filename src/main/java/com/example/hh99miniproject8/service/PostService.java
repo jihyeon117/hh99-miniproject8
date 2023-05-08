@@ -8,13 +8,16 @@ import com.example.hh99miniproject8.entity.User;
 import com.example.hh99miniproject8.exception.CustomException;
 import com.example.hh99miniproject8.repository.PostRepository;
 import com.example.hh99miniproject8.repository.UserRepository;
-import com.example.hh99miniproject8.security.jwt.JwtUtil;
+import com.example.hh99miniproject8.security.jwt.JwtProvider;
+import com.example.hh99miniproject8.security.jwt.JwtService;
+import com.example.hh99miniproject8.security.jwt.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
@@ -34,13 +37,12 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final JwtUtil jwtUtil;
+    private final JwtProvider jwtProvider;
 
     //게시글 생성 API
     @Transactional
-    public ResponseEntity<PostResponseDto> createPost(PostRequestDto requestDTO, HttpServletRequest httpServletRequest) {
-        User user = tokenCheck(httpServletRequest);
-        Post post = postRepository.saveAndFlush(new Post(requestDTO, user));
+    public ResponseEntity<PostResponseDto> createPost(PostRequestDto requestDTO, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Post post = postRepository.saveAndFlush(new Post(requestDTO, userDetails.getUser()));
         return ResponseEntity.status(HttpStatus.CREATED).body(new PostResponseDto(post));
     }
 
@@ -93,13 +95,13 @@ public class PostService {
 
     // 토큰 검사
     public User tokenCheck(HttpServletRequest httpServletRequest) {
-        String token = jwtUtil.resolveAccessToken(httpServletRequest);
+        String token = jwtProvider.resolveAccessToken(httpServletRequest);
         Claims claims;
 
         if (token != null) {
-            if (jwtUtil.validateToken(token)) {
+            if (jwtProvider.validateToken(token)) {
                 // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
+                claims = jwtProvider.getUserInfoFromToken(token);
             } else {
                 throw new CustomException(TOKEN_NOT_FOUND);
             }
