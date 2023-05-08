@@ -8,7 +8,7 @@ import com.example.hh99miniproject8.entity.User;
 import com.example.hh99miniproject8.exception.CustomException;
 import com.example.hh99miniproject8.repository.PostRepository;
 import com.example.hh99miniproject8.repository.UserRepository;
-import com.example.hh99miniproject8.security.jwt.JwtUtil;
+import com.example.hh99miniproject8.security.jwt.JwtProvider;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final JwtUtil jwtUtil;
+    private final JwtProvider jwtProvider;
 
     //게시글 생성 API
     @Transactional
@@ -96,13 +96,13 @@ public class PostService {
 
     // 토큰 검사
     public User tokenCheck(HttpServletRequest httpServletRequest) {
-        String token = jwtUtil.resolveAccessToken(httpServletRequest);
+        String token = jwtProvider.resolveAccessToken(httpServletRequest);
         Claims claims;
 
         if (token != null) {
-            if (jwtUtil.validateToken(token)) {
+            if (jwtProvider.validateToken(token)) {
                 // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
+                claims = jwtProvider.getUserInfoFromToken(token);
             } else {
                 throw new CustomException(TOKEN_NOT_FOUND);
             }

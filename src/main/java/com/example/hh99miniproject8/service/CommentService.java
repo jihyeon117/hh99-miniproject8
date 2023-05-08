@@ -2,8 +2,6 @@ package com.example.hh99miniproject8.service;
 
 import com.example.hh99miniproject8.dto.comment.CommentRequestDto;
 import com.example.hh99miniproject8.dto.comment.CommentResponseDto;
-import com.example.hh99miniproject8.dto.post.PostRequestDto;
-import com.example.hh99miniproject8.dto.post.PostResponseDto;
 import com.example.hh99miniproject8.entity.Comment;
 import com.example.hh99miniproject8.entity.Post;
 import com.example.hh99miniproject8.entity.User;
@@ -11,9 +9,8 @@ import com.example.hh99miniproject8.exception.CustomException;
 import com.example.hh99miniproject8.repository.CommentRepository;
 import com.example.hh99miniproject8.repository.PostRepository;
 import com.example.hh99miniproject8.repository.UserRepository;
-import com.example.hh99miniproject8.security.jwt.JwtUtil;
+import com.example.hh99miniproject8.security.jwt.JwtProvider;
 import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,7 +27,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final JwtUtil jwtUtil;
+    private final JwtProvider jwtProvider;
 
     //댓글 생성 API
     @Transactional
@@ -64,13 +61,13 @@ public class CommentService {
 
     // 토큰 검사
     public User tokenCheck(HttpServletRequest httpServletRequest) {
-        String token = jwtUtil.resolveAccessToken(httpServletRequest);
+        String token = jwtProvider.resolveAccessToken(httpServletRequest);
         Claims claims;
 
         if (token != null) {
-            if (jwtUtil.validateToken(token)) {
+            if (jwtProvider.validateToken(token)) {
                 // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
+                claims = jwtProvider.getUserInfoFromToken(token);
             } else {
                 throw new CustomException(TOKEN_NOT_FOUND);
             }
