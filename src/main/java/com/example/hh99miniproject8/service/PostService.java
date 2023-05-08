@@ -40,8 +40,7 @@ public class PostService {
     @Transactional
     public ResponseEntity<PostResponseDto> createPost(PostRequestDto requestDTO, HttpServletRequest httpServletRequest) {
         User user = tokenCheck(httpServletRequest);
-        List<Comment> comments = new ArrayList<>();
-        Post post = postRepository.save(new Post(requestDTO, comments, user));
+        Post post = postRepository.saveAndFlush(new Post(requestDTO, user));
         return ResponseEntity.status(HttpStatus.CREATED).body(new PostResponseDto(post));
     }
 
