@@ -30,6 +30,7 @@ import java.util.Objects;
 public class JwtProvider {
     private final UserDetailsServiceImpl userDetailsService;
     public static final String AUTHORIZATION_KEY = "auth";
+    public static final String ACCESS_AUTHORIZATION_HEADER = "AUTHORIZATION";
 //    public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER_PREFIX = "Bearer ";
     // 만료 시간

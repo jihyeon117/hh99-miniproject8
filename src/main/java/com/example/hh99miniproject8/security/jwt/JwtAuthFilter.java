@@ -33,18 +33,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        else{// 로그인 이후의 상태
-            if(jwtProvider.validateToken(accessToken)){ // 토큰이 유효하고 만료되지 않으면
-                // jwtProvider.getUserInfoFromToken(accessToken) : token으로 claim을 반환함
-                // jwtProvider.getAuthentication() : claim의 getsubject 즉 username을 매개변수로 user를 찾아 UserDetail을 생성,
-                // UserDetails를 이용해서 Authentication객체를 만들어서 반환함.
-                Authentication authentication = jwtProvider.getAuthentication(accessToken);
-                // SecurityContext에 Authentication객체를 저장함
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+        if(jwtProvider.validateToken(accessToken)){ // 토큰이 유효하고 만료되지 않으면
+            // jwtProvider.getUserInfoFromToken(accessToken) : token으로 claim을 반환함
+            // jwtProvider.getAuthentication() : claim의 getsubject 즉 username을 매개변수로 user를 찾아 UserDetail을 생성,
+            // UserDetails를 이용해서 Authentication객체를 만들어서 반환함.
+            Authentication authentication = jwtProvider.getAuthentication(accessToken);
+            // SecurityContext에 Authentication객체를 저장함
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-
-
         filterChain.doFilter(request, response);
     }
 
