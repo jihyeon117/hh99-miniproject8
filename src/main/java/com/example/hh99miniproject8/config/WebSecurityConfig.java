@@ -37,10 +37,10 @@ public class WebSecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer(){
         log.info("web ignore setting");
-        return (web -> web.ignoring()
+        return (web) -> web.ignoring()
                 .requestMatchers("/signup")
                 .requestMatchers(PathRequest.toH2Console())                             // h2db 인증 요청 무시
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())); // staticResource(images, js, css등등) 인증 절차 무시
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()); // staticResource(images, js, css등등) 인증 절차 무시
     }
 
     @Bean
