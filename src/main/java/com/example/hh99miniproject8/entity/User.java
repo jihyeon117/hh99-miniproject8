@@ -2,6 +2,7 @@ package com.example.hh99miniproject8.entity;
 
 import com.example.hh99miniproject8.dto.user.SignupRequestDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -19,7 +20,11 @@ public class User {
     private RoleTypeEnum role;
     private String address;
     private String nickname;
-    private String refreshtoken;
+    private String refreshToken;
+
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "REFRESHTOKEN_ID")
+//    private RefreshToken refreshToken;
 
     public User(SignupRequestDto requst, RoleTypeEnum role) {
         this.username = requst.getUsername();
@@ -30,6 +35,6 @@ public class User {
     }
 
     public void setRefreshToken(String refreshToken) {
-        this.refreshtoken = refreshToken;
+        this.refreshToken = refreshToken;
     }
 }

@@ -8,13 +8,16 @@ import com.example.hh99miniproject8.entity.User;
 import com.example.hh99miniproject8.exception.CustomException;
 import com.example.hh99miniproject8.repository.PostRepository;
 import com.example.hh99miniproject8.repository.UserRepository;
-import com.example.hh99miniproject8.security.jwt.JwtUtil;
+import com.example.hh99miniproject8.security.jwt.JwtProvider;
+import com.example.hh99miniproject8.security.jwt.JwtService;
+import com.example.hh99miniproject8.security.jwt.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
@@ -34,20 +37,20 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final JwtUtil jwtUtil;
+    private final JwtProvider jwtProvider;
 
     //게시글 생성 API
     @Transactional
-    public ResponseEntity<PostResponseDto> createPost(PostRequestDto requestDTO, HttpServletRequest httpServletRequest) {
-        User user = tokenCheck(httpServletRequest);
+    public ResponseEntity<PostResponseDto> createPost(PostRequestDto requestDTO, User user) {
         Post post = postRepository.saveAndFlush(new Post(requestDTO, user));
         return ResponseEntity.status(HttpStatus.CREATED).body(new PostResponseDto(post));
     }
 
+
     //게시글 전체 조회 API
     @Transactional(readOnly = true)
     public ResponseEntity<Map<String, List<PostResponseDto>>> listPosts() {
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = postRepository.findAllByOrderByModifiedAtDesc();
         List<PostResponseDto> postList = new ArrayList<>();
         for(Post post : posts) {
             postList.add(new PostResponseDto(post));
@@ -69,8 +72,7 @@ public class PostService {
 
     //게시글 수정 API
     @Transactional
-    public ResponseEntity<PostResponseDto> updatePost(Long id, PostRequestDto requestDTO, HttpServletRequest httpServletRequest) {
-        User user = tokenCheck(httpServletRequest);
+    public ResponseEntity<PostResponseDto> updatePost(Long id, PostRequestDto requestDTO, User user) {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new CustomException(POST_NOT_FOUND)
         );
@@ -80,8 +82,7 @@ public class PostService {
 
     //게시글 삭제 API
     @Transactional
-    public ResponseEntity<String> deletePost(Long id, HttpServletRequest httpServletRequest) {
-        User user = tokenCheck(httpServletRequest);
+    public ResponseEntity<String> deletePost(Long id, User user) {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new CustomException(POST_NOT_FOUND)
         );
@@ -90,26 +91,4 @@ public class PostService {
         return ResponseEntity.status(HttpStatus.OK).body("게시글 식제 성공");
 
     }
-
-    // 토큰 검사
-    public User tokenCheck(HttpServletRequest httpServletRequest) {
-        String token = jwtUtil.resolveAccessToken(httpServletRequest);
-        Claims claims;
-
-        if (token != null) {
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new CustomException(TOKEN_NOT_FOUND);
-            }
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new CustomException(USER_NOT_FOUND)
-            );
-            return user;
-        }
-        return null;
-    }
-
-
 }
