@@ -2,6 +2,7 @@ package com.example.hh99miniproject8.entity;
 
 import com.example.hh99miniproject8.dto.user.SignupRequestDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;

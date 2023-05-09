@@ -33,6 +33,9 @@ public class UserService {
         RoleTypeEnum role = RoleTypeEnum.USER;
         // 관리자 인가 체크
         if(reqeust.isAdmin()){
+            // 입력받은 isAdmin이 True 이면 ADMIN으로 가입
+            // AtuhKey가 null 이면 즉 아무것도 입력하지 않으면 AUTHKEY_NOT_FOUND(입력하지 않음) 예외
+            // AtuhKey가 null이 아니고 서버의 ADMIN_TOKEN과 비교해서 같을 떄 관리자 가입 인증완료
             if(reqeust.getAuthKey() == null || !reqeust.getAuthKey().equals(ADMIN_TOKEN))
                 throw new CustomException(ErrorCode.AUTHKEY_NOT_FOUND);
             if(reqeust.getAuthKey().equals(ADMIN_TOKEN))
