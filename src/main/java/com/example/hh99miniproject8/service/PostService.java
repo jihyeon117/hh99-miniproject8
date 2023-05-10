@@ -4,6 +4,7 @@ import com.example.hh99miniproject8.dto.post.PostRequestDto;
 import com.example.hh99miniproject8.dto.post.PostResponseDto;
 import com.example.hh99miniproject8.entity.Comment;
 import com.example.hh99miniproject8.entity.Post;
+import com.example.hh99miniproject8.entity.RoleTypeEnum;
 import com.example.hh99miniproject8.entity.User;
 import com.example.hh99miniproject8.exception.CustomException;
 import com.example.hh99miniproject8.repository.PostRepository;
@@ -71,7 +72,9 @@ public class PostService {
         // 게시글 존재 유무체크
         Post post = isPostExist(id);
         // 게시글 작성자와, 유저 매치 체크
-        if(checkAuthorIdMatch(post, user)){throw new CustomException(WRITER_ONLY_MODIFY);}
+        if(checkAuthorIdMatch(post, user)){
+            throw new CustomException(WRITER_ONLY_MODIFY);
+        }
         post.update(requestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(new PostResponseDto(post));
     }
@@ -82,7 +85,9 @@ public class PostService {
         // 게시글 존재 유무체크
         Post post = isPostExist(id);
         // 게시글 작성자와, 유저 매치 체크
-        if(checkAuthorIdMatch(post, user)){throw new CustomException(WRITER_ONLY_DELETE);}
+        if(checkAuthorIdMatch(post, user)) {
+            throw new CustomException(WRITER_ONLY_DELETE);
+        }
         postRepository.delete(post);
         return ResponseEntity.status(HttpStatus.OK).body("게시글 식제 성공");
 
@@ -99,7 +104,7 @@ public class PostService {
 
     // 게시글과 게시글을 변경하려는 요청을 보낸 유저가 일치하는지 여부 체크 default return value : true
     private boolean checkAuthorIdMatch(Post post, User user){
-        if(post.getUser().getUsername().equals(user.getUsername()))
+        if(post.getUser().getUsername().equals(user.getUsername()) || user.getRole() == RoleTypeEnum.ADMIN)
             return false;
         return true;
     }

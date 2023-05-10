@@ -4,6 +4,7 @@ import com.example.hh99miniproject8.dto.comment.CommentRequestDto;
 import com.example.hh99miniproject8.dto.comment.CommentResponseDto;
 import com.example.hh99miniproject8.entity.Comment;
 import com.example.hh99miniproject8.entity.Post;
+import com.example.hh99miniproject8.entity.RoleTypeEnum;
 import com.example.hh99miniproject8.entity.User;
 import com.example.hh99miniproject8.exception.CustomException;
 import com.example.hh99miniproject8.repository.CommentRepository;
@@ -37,7 +38,7 @@ public class CommentService {
         // 게시글 존재유무 체크
         Comment comment = isCommentExist(id);
         // 작성자와, 유저 매치체크
-        if(!checkAuthorIdMatch(comment, user)) {
+        if(checkAuthorIdMatch(comment, user)) {
             throw new CustomException(WRITER_ONLY_MODIFY);
         }
         comment.update(requestDTO);
@@ -50,7 +51,7 @@ public class CommentService {
         // 게시글 존재유무 체크
         Comment comment = isCommentExist(id);
         // 작성자와, 유저 매치체크
-        if(!checkAuthorIdMatch(comment, user))
+        if(checkAuthorIdMatch(comment, user))
             throw new CustomException(WRITER_ONLY_DELETE);
 
         commentRepository.delete(comment);
@@ -80,7 +81,7 @@ public class CommentService {
 
     // 게시글과 게시글을 변경하려는 요청을 보낸 유저가 일치하는지 여부 체크 default return value : true
     private boolean checkAuthorIdMatch(Comment comment, User user){
-        if(!comment.getUser().getUsername().equals(user.getUsername()))
+        if(comment.getUser().getUsername().equals(user.getUsername()) || user.getRole() == RoleTypeEnum.ADMIN)
             return false;
         return true;
     }
