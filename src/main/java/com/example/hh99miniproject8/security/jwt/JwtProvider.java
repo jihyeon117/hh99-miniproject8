@@ -1,11 +1,8 @@
 package com.example.hh99miniproject8.security.jwt;
 
-import com.example.hh99miniproject8.Redis.RedisUtil;
 import com.example.hh99miniproject8.entity.RefreshToken;
 import com.example.hh99miniproject8.entity.RoleTypeEnum;
 import com.example.hh99miniproject8.entity.Token;
-import com.example.hh99miniproject8.exception.CustomException;
-import com.example.hh99miniproject8.exception.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -39,8 +36,6 @@ public class JwtProvider {
     // 만료 시간
     private static final long ACCESS_TOKEN_TIME = 30 * 60 * 1000L;              // ACCESS_TOKEN 만료시간 30분
     private static final long REFRESH_TOKEN_TIME = ACCESS_TOKEN_TIME * 24 * 14; // REFRESH_TOKEN 만료시간 보통 2주로 설정
-
-    private final RedisUtil redisUtil;
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -134,10 +129,6 @@ public class JwtProvider {
             // parserBuilder() : jwtTokenBuiler를 반환
             // setSigningKey   : signatureAlgorithm에 사용할 key를 setting
             // parseClaimsJws(token)
-            if(redisUtil.hasKeyBlackList(token)) {
-                //BlacList추가된 토큰인지 확인하고 검증
-                return false;
-            }
             log.info(claims.getBody().get("auth").toString());
             return !claims.getBody().getExpiration().before(new Date());
         } catch (SecurityException | MalformedJwtException e) {
@@ -183,24 +174,6 @@ public class JwtProvider {
         Claims claims = getUserInfoFromToken(token);
         UserDetails userDetails = userDetailsService.loadUserByUsername(claims.getSubject());
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-    }
-
-
-    public Long getExpiration(String accessToken) {
-
-        try {
-            // accessToken 남은 유효시간
-            Date expiration = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(accessToken).getBody().getExpiration();
-            Long now = new Date().getTime();
-
-            // accessToken 의 현재 남은시간 반환
-            return (expiration.getTime() - now);
-        //유효하지 않는 JWT 서명
-        } catch (SignatureException e) {
-            throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
-        }
-
-
     }
 
 
