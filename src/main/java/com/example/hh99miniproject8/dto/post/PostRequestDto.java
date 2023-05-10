@@ -9,4 +9,5 @@ public class PostRequestDto {
     private String content;
     private String category;
     private String region;
+    private String imageUrl;
 }
