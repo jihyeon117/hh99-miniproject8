@@ -25,7 +25,6 @@ public class PostResponseDto {
     private String region;
     private List<CommentResponseDto> comments;
     private int goodCount;
-    private String imageUrl;
 
     public PostResponseDto(Post post) {
         this.id = post.getId();
@@ -42,7 +41,6 @@ public class PostResponseDto {
             this.comments = post.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
         }
         this.goodCount = post.getGoodCount();
-        this.imageUrl = post.getImageUrl();
     }
 
 }
