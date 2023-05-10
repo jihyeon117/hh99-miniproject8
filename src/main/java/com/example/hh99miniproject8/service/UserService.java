@@ -52,7 +52,7 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<Token> login(LoginRequestDto request, HttpServletResponse response) {
+    public ResponseEntity<String> login(LoginRequestDto request, HttpServletResponse response) {
         // 입력한 ID를 기반으로 회원 존재 유무 체크
         User user = userRepository.findByUsername(request.getUsername()).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_NOT_FOUND)
@@ -76,6 +76,6 @@ public class UserService {
         jwtService.setRefreshToken(user, refreshToken);
 
 //        response.addHeader(JwtProvider.AUTHORIZATION_HEADER, accessToken, refreshToken);
-        return ResponseEntity.status(HttpStatus.OK).body(tokenDto);
+        return ResponseEntity.status(HttpStatus.OK).body("로그인 성공");
     }
 }
