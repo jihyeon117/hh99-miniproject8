@@ -1,5 +1,6 @@
 package com.example.hh99miniproject8.service;
 
+import com.example.hh99miniproject8.Redis.RedisUtil;
 import com.example.hh99miniproject8.dto.user.LoginRequestDto;
 import com.example.hh99miniproject8.dto.user.SignupRequestDto;
 import com.example.hh99miniproject8.entity.RoleTypeEnum;
@@ -7,6 +8,9 @@ import com.example.hh99miniproject8.entity.Token;
 import com.example.hh99miniproject8.entity.User;
 import com.example.hh99miniproject8.exception.CustomException;
 import com.example.hh99miniproject8.exception.ErrorCode;
+import com.example.hh99miniproject8.exception.ErrorStatusResponse;
+import com.example.hh99miniproject8.exception.GlobalExceptionHandler;
+import com.example.hh99miniproject8.repository.RefreshTokenRepository;
 import com.example.hh99miniproject8.repository.UserRepository;
 import com.example.hh99miniproject8.security.jwt.JwtProvider;
 import com.example.hh99miniproject8.security.jwt.JwtService;
@@ -14,6 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final RedisUtil redisUtil;
     private final JwtService jwtService;
     private final JwtProvider jwtProvider;
 
@@ -73,5 +80,26 @@ public class UserService {
 
 //        response.addHeader(JwtProvider.AUTHORIZATION_HEADER, accessToken, refreshToken);
         return ResponseEntity.status(HttpStatus.OK).body(tokenDto);
+    }
+
+    @Transactional
+    public ResponseEntity<?> logout(String accessToken, String refreshToken) {
+        // 1. Access Token 검증
+        if (!jwtProvider.validateToken(accessToken)) {
+            throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
+        }
+
+        // 2. Access Token 에서 authentication 을 가져옴
+        Authentication authentication = jwtProvider.getAuthentication(accessToken);
+
+        // 3. DB에 저장된 Refresh Token 제거
+        Long userId = Long.parseLong(authentication.getName());
+        refreshTokenRepository.deleteById(userId);
+
+        // 4. Access Token blacklist에 등록하여 만료
+        // 해당 엑세스 토큰의 남은 유효시간을 얻음
+        Long expiration = jwtProvider.getExpiration(accessToken);
+        redisUtil.setBlackList(accessToken, "access_token", expiration);
+        return ResponseEntity.status(HttpStatus.OK).body("로그아웃 되었습니다.");
     }
 }

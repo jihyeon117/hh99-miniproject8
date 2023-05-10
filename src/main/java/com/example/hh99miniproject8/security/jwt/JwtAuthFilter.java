@@ -1,5 +1,8 @@
 package com.example.hh99miniproject8.security.jwt;
 
+import com.example.hh99miniproject8.Redis.RedisUtil;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.util.ObjectUtils;
 import io.jsonwebtoken.*;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,6 +26,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     // 프론트 측에서 요청 헤더에 토큰을 넣어 보내면 이 필터가 검증해준다.
     private final JwtProvider jwtProvider;
     private final JwtService jwtService;
+    private final RedisUtil redisUtil;
+    private final RedisTemplate redisTemplate;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -37,9 +42,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             // jwtProvider.getUserInfoFromToken(accessToken) : token으로 claim을 반환함
             // jwtProvider.getAuthentication() : claim의 getsubject 즉 username을 매개변수로 user를 찾아 UserDetail을 생성,
             // UserDetails를 이용해서 Authentication객체를 만들어서 반환함.
-            Authentication authentication = jwtProvider.getAuthentication(accessToken);
-            // SecurityContext에 Authentication객체를 저장함
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // (추가) Redis 에 해당 accessToken logout 여부 확인
+            String isLogout = (String)redisTemplate.opsForValue().get(accessToken);
+            // (추가) 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext에 저장)
+            if (ObjectUtils.isEmpty(isLogout)) {
+                Authentication authentication = jwtProvider.getAuthentication(accessToken);
+                // SecurityContext에 Authentication객체를 저장함
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
         filterChain.doFilter(request, response);
     }
