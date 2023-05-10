@@ -50,7 +50,7 @@ public class WebSecurityConfig {
         http.csrf().disable();
 
         // cors 설정!! 이걸 안해놓으면 아래의 corsConfigurationSource()가 적용이 안된다.!!
-        // http.cors();
+        http.cors();
         http.authorizeHttpRequests()
                 //>>>>>>>>>>>>>>>>>>>> 인증을 무시하는 reqeust
                 .requestMatchers("/signup", "/login").permitAll()

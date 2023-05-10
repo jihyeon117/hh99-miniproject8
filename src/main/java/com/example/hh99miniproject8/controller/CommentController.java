@@ -2,6 +2,7 @@ package com.example.hh99miniproject8.controller;
 
 import com.example.hh99miniproject8.dto.comment.CommentRequestDto;
 import com.example.hh99miniproject8.dto.comment.CommentResponseDto;
+import com.example.hh99miniproject8.dto.post.PostResponseDto;
 import com.example.hh99miniproject8.security.jwt.UserDetailsImpl;
 import com.example.hh99miniproject8.service.CommentService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,10 +11,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
+@CrossOrigin
 public class CommentController {
 
     private final CommentService commentService;

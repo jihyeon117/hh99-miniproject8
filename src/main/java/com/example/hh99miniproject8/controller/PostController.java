@@ -18,6 +18,7 @@ import java.util.Map;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
+@CrossOrigin
 public class PostController {
 
     private final PostService postservice;

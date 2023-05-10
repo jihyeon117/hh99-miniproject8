@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
+@CrossOrigin
 public class GoodController {
 
     private final GoodService goodService;
