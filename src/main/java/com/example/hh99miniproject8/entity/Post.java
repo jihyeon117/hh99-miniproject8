@@ -30,6 +30,10 @@ public class Post extends Timestamped {
     @NotNull
     private String category;
 
+    @NotNull
+    private String region;
+
+
     @ColumnDefault("0")
     private int goodCount;
 
@@ -48,13 +52,13 @@ public class Post extends Timestamped {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
         this.category = postRequestDto.getCategory();
+        this.region = postRequestDto.getRegion();
         this.user = user;
     }
 
     public void update(PostRequestDto postRequestDto, User user) {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
-        this.category = postRequestDto.getCategory();
         this.user = user;
     }
 
