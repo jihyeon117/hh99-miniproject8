@@ -5,6 +5,7 @@ import com.example.hh99miniproject8.dto.post.PostRequestDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -14,11 +15,11 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
+    @Column(name = "postId")
     private Long id;
 
     @NotNull
@@ -33,10 +34,13 @@ public class Post extends Timestamped {
     @ColumnDefault("0")
     private int goodCount;
 
+
+    // 댓글
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     @OrderBy("createdAt desc")
     private List<Comment> comments;
 
+    // 좋아요
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Good> goods = new ArrayList<>();
 
@@ -48,14 +52,14 @@ public class Post extends Timestamped {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
         this.category = postRequestDto.getCategory();
-        this.user = user;
+        setUser(user);
     }
 
-    public void update(PostRequestDto postRequestDto, User user) {
+    public void update(PostRequestDto postRequestDto) {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
-        this.category = postRequestDto.getCategory();
-        this.user = user;
+        // 카테고리 수정안함
+//        this.category = postRequestDto.getCategory();
     }
 
     public void togglLike(boolean likeIoN) {
@@ -64,5 +68,12 @@ public class Post extends Timestamped {
         } else if(likeIoN == false) {
             this.goodCount = this.goodCount - 1;
         }
+    }
+
+    public void setUser(User user){
+        this.user = user;
+
+        if(!user.getPosts().contains(this))
+            user.getPosts().add(this);
     }
 }

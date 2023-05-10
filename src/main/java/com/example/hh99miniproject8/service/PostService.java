@@ -25,9 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.hh99miniproject8.exception.ErrorCode.POST_NOT_FOUND;
-import static com.example.hh99miniproject8.exception.ErrorCode.TOKEN_NOT_FOUND;
-import static com.example.hh99miniproject8.exception.ErrorCode.USER_NOT_FOUND;
+import static com.example.hh99miniproject8.exception.ErrorCode.*;
 
 
 @Service
@@ -76,7 +74,11 @@ public class PostService {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new CustomException(POST_NOT_FOUND)
         );
-        post.update(requestDTO, user);
+
+        if(!post.getUser().getUsername().equals(user.getUsername()))
+            throw new CustomException(WRITER_ONLY_MODIFY);
+
+        post.update(requestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(new PostResponseDto(post));
     }
 
