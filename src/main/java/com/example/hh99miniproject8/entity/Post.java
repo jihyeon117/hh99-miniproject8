@@ -33,6 +33,8 @@ public class Post extends Timestamped {
     @NotNull
     private String region;
 
+    @Column(length = 500, nullable = false)
+    private String imageUrl;
 
     @ColumnDefault("0")
     private int goodCount;
@@ -53,6 +55,7 @@ public class Post extends Timestamped {
         this.content = postRequestDto.getContent();
         this.category = postRequestDto.getCategory();
         this.region = postRequestDto.getRegion();
+        this.imageUrl = postRequestDto.getImageUrl();
         this.user = user;
     }
 
