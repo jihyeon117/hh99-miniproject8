@@ -20,7 +20,7 @@ public class UserController{
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Token> login(@RequestBody LoginRequestDto request, HttpServletResponse httpResponse){
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto request, HttpServletResponse httpResponse){
        return userService.login(request, httpResponse);
     }
 }

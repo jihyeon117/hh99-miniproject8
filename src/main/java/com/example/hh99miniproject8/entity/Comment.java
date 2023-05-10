@@ -18,19 +18,13 @@ public class Comment extends Timestamped {
     private String content;
     private String address;
 
-    public void update(CommentRequestDto request) {
-        this.content = request.getContent();
-    }
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
-
 
     public Comment(CommentRequestDto commentRequestDto, User user, Post post) {
         this.content = commentRequestDto.getContent();
@@ -39,10 +33,10 @@ public class Comment extends Timestamped {
         this.post = post;
     }
 
-    public void update(CommentRequestDto commentRequestDto, User user) {
+    // Chore 석빈
+    // update는 본인만 할 수 있기때문에 user는 변경이 없음으로 매개변수와 this.user = user 제거
+    public void update(CommentRequestDto commentRequestDto) {
         this.content = commentRequestDto.getContent();
         this.address = user.getAddress();
-        this.user = user;
     }
-
 }
