@@ -2,32 +2,25 @@ package com.example.hh99miniproject8.service;
 
 import com.example.hh99miniproject8.dto.post.PostRequestDto;
 import com.example.hh99miniproject8.dto.post.PostResponseDto;
-import com.example.hh99miniproject8.entity.Comment;
 import com.example.hh99miniproject8.entity.Post;
 import com.example.hh99miniproject8.entity.User;
 import com.example.hh99miniproject8.exception.CustomException;
 import com.example.hh99miniproject8.repository.PostRepository;
 import com.example.hh99miniproject8.repository.UserRepository;
 import com.example.hh99miniproject8.security.jwt.JwtProvider;
-import com.example.hh99miniproject8.security.jwt.JwtService;
-import com.example.hh99miniproject8.security.jwt.UserDetailsImpl;
-import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.example.hh99miniproject8.exception.ErrorCode.POST_NOT_FOUND;
-import static com.example.hh99miniproject8.exception.ErrorCode.TOKEN_NOT_FOUND;
-import static com.example.hh99miniproject8.exception.ErrorCode.USER_NOT_FOUND;
 
 
 @Service
@@ -38,6 +31,9 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
+//    @Value("${cloud.aws.s3.bucket}")
+//    private String bucket;
+//    private AmazonS3Client amazonS3Client;
 
     //게시글 생성 API
     @Transactional
@@ -52,7 +48,7 @@ public class PostService {
     public ResponseEntity<Map<String, List<PostResponseDto>>> listPosts() {
         List<Post> posts = postRepository.findAllByOrderByModifiedAtDesc();
         List<PostResponseDto> postList = new ArrayList<>();
-        for(Post post : posts) {
+        for (Post post : posts) {
             postList.add(new PostResponseDto(post));
         }
 

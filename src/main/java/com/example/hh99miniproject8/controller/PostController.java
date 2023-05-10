@@ -4,12 +4,12 @@ import com.example.hh99miniproject8.dto.post.PostRequestDto;
 import com.example.hh99miniproject8.dto.post.PostResponseDto;
 import com.example.hh99miniproject8.security.jwt.UserDetailsImpl;
 import com.example.hh99miniproject8.service.PostService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -22,6 +22,7 @@ public class PostController {
 
     private final PostService postservice;
 
+    private final
 
     //게시글 생성 API
     @PostMapping("/posts")
@@ -52,7 +53,6 @@ public class PostController {
     public ResponseEntity<String> deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postservice.deletePost(id, userDetails.getUser());
     }
-
 
 
 }
