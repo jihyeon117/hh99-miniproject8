@@ -99,7 +99,7 @@ public class UserService {
         // 4. Access Token blacklist에 등록하여 만료
         // 해당 엑세스 토큰의 남은 유효시간을 얻음
         Long expiration = jwtProvider.getExpiration(accessToken);
-        redisUtil.setBlackList(accessToken, "access_token", expiration);
+        redisUtil.setBlackList(accessToken, "access_token", expiration); //access token의 접근 시간을 만료함
         return ResponseEntity.status(HttpStatus.OK).body("로그아웃 되었습니다.");
     }
 }
