@@ -31,6 +31,10 @@ public class Post extends Timestamped {
     @NotNull
     private String category;
 
+    @NotNull
+    private String region;
+
+
     @ColumnDefault("0")
     private int goodCount;
 
@@ -52,14 +56,19 @@ public class Post extends Timestamped {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
         this.category = postRequestDto.getCategory();
+        this.region = postRequestDto.getRegion();
         this.user = user;
     }
 
+    // chore 석빈
+    // post를 업데이트해도 작성자는 바뀌지 않으니 user를 업데이트 해서는 안됨
+    // 특히 admin이 수정을 할경우 작성자가 admin이 되버림
     public void update(PostRequestDto postRequestDto) {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
         // 카테고리 수정안함
 //        this.category = postRequestDto.getCategory();
+//        this.user = user;
     }
 
     public void togglLike(boolean likeIoN) {
