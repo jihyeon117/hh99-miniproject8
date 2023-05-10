@@ -52,7 +52,7 @@ public class Post extends Timestamped {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
         this.category = postRequestDto.getCategory();
-        setUser(user);
+        this.user = user;
     }
 
     public void update(PostRequestDto postRequestDto) {
@@ -68,12 +68,5 @@ public class Post extends Timestamped {
         } else if(likeIoN == false) {
             this.goodCount = this.goodCount - 1;
         }
-    }
-
-    public void setUser(User user){
-        this.user = user;
-
-        if(!user.getPosts().contains(this))
-            user.getPosts().add(this);
     }
 }

@@ -37,11 +37,6 @@ public class User {
 
     private String refreshToken;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "REFRESHTOKEN_ID")
-//    private RefreshToken refreshToken;
-    @OneToMany (mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
-    private List<Post> posts = new ArrayList<>();
     public User(SignupRequestDto requst, RoleTypeEnum role) {
         this.username = requst.getUsername();
         this.password = requst.getPassword();
