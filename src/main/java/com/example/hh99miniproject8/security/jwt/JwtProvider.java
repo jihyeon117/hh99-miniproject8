@@ -1,6 +1,5 @@
 package com.example.hh99miniproject8.security.jwt;
 
-import com.example.hh99miniproject8.Redis.RedisUtil;
 import com.example.hh99miniproject8.entity.RefreshToken;
 import com.example.hh99miniproject8.entity.RoleTypeEnum;
 import com.example.hh99miniproject8.entity.Token;
@@ -22,8 +21,6 @@ import org.springframework.util.StringUtils;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 
 
 // 토큰의 생성, 반환, 유효성 검사만을 담당하는 component
@@ -40,7 +37,7 @@ public class JwtProvider {
     private static final long ACCESS_TOKEN_TIME = 30 * 60 * 1000L;              // ACCESS_TOKEN 만료시간 30분
     private static final long REFRESH_TOKEN_TIME = ACCESS_TOKEN_TIME * 24 * 14; // REFRESH_TOKEN 만료시간 보통 2주로 설정
 
-    private final RedisUtil redisUtil;
+//    private final RedisUtil redisUtil;
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -112,7 +109,7 @@ public class JwtProvider {
 
     // ACCESS 토큰 반환 메서드
     public String resolveAccessToken(HttpServletRequest request){
-        String bearerToken = request.getHeader("AUTHORIZATION");
+        String bearerToken = request.getHeader(ACCESS_AUTHORIZATION_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)){
             return bearerToken.substring(7);
         }
@@ -134,10 +131,10 @@ public class JwtProvider {
             // parserBuilder() : jwtTokenBuiler를 반환
             // setSigningKey   : signatureAlgorithm에 사용할 key를 setting
             // parseClaimsJws(token)
-            if(redisUtil.hasKeyBlackList(token)) {
-                //BlacList추가된 토큰인지 확인하고 검증
-                return false;
-            }
+//            if(redisUtil.hasKeyBlackList(token)) {
+//                //BlacList추가된 토큰인지 확인하고 검증
+//                return false;
+//            }
             log.info(claims.getBody().get("auth").toString());
             return !claims.getBody().getExpiration().before(new Date());
         } catch (SecurityException | MalformedJwtException e) {
