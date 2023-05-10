@@ -1,8 +1,6 @@
 package com.example.hh99miniproject8.entity;
 
-import com.example.hh99miniproject8.dto.comment.CommentResponseDto;
 import com.example.hh99miniproject8.dto.post.PostRequestDto;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -66,9 +64,9 @@ public class Post extends Timestamped {
     }
 
     public void togglLike(boolean likeIoN) {
-        if(likeIoN == true) {
+        if (likeIoN == true) {
             this.goodCount = this.goodCount + 1;
-        } else if(likeIoN == false) {
+        } else if (likeIoN == false) {
             this.goodCount = this.goodCount - 1;
         }
     }
