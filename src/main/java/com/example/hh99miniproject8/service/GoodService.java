@@ -28,9 +28,8 @@ public class GoodService {
     private final JwtProvider jwtProvider;
 
     @Transactional
-    public ResponseEntity<String> likes(Long id, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<String> likes(Long id, User user) {
 
-        User user = tokenCheck(httpServletRequest);
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new CustomException(POST_NOT_FOUND)
         );
@@ -47,22 +46,4 @@ public class GoodService {
         }
     }
 
-    // 토큰 검사
-    public User tokenCheck(HttpServletRequest httpServletRequest) {
-        String token = jwtProvider.resolveAccessToken(httpServletRequest);
-        Claims claims;
-
-        if (token != null) {
-            if (jwtProvider.validateToken(token)) {
-                claims = jwtProvider.getUserInfoFromToken(token);
-            } else {
-                throw new CustomException(TOKEN_NOT_FOUND);
-            }
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new CustomException(USER_NOT_FOUND)
-            );
-            return user;
-        }
-        return null;
-    }
 }

@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -57,6 +58,7 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests()
                 //>>>>>>>>>>>>>>>>>>>> 인증을 무시하는 reqeust
                 .requestMatchers("/signup", "/login").permitAll()
+                .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
                 //<<<<<<<<<<<<<<<<<<<< 인증을 받아야하는 request
                 .anyRequest().authenticated()
 

@@ -22,6 +22,7 @@ public class PostResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private String category;
+    private String region;
     private List<CommentResponseDto> comments;
     private int goodCount;
 
@@ -33,6 +34,7 @@ public class PostResponseDto {
         this.createdAt = post.getCreatedAt();
         this.modifiedAt = post.getModifiedAt();
         this.category = post.getCategory();
+        this.region = post.getRegion();
         if (post.getComments() == null) {
             this.comments = Collections.emptyList();
         } else {

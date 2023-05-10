@@ -52,7 +52,4 @@ public class PostController {
     public ResponseEntity<String> deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postservice.deletePost(id, userDetails.getUser());
     }
-
-
-
 }

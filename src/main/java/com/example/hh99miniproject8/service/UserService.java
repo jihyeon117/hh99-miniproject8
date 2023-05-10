@@ -43,8 +43,12 @@ public class UserService {
             // 입력받은 isAdmin이 True 이면 ADMIN으로 가입
             // AtuhKey가 null 이면 즉 아무것도 입력하지 않으면 AUTHKEY_NOT_FOUND(입력하지 않음) 예외
             // AtuhKey가 null이 아니고 서버의 ADMIN_TOKEN과 비교해서 같을 떄 관리자 가입 인증완료
-            if(reqeust.getAuthKey() == null || !reqeust.getAuthKey().equals(ADMIN_TOKEN))
+            if(reqeust.getAuthKey() == null)                 // 아무것도 입력하지 않았을 때)
                 throw new CustomException(ErrorCode.AUTHKEY_NOT_FOUND);
+
+            if(!reqeust.getAuthKey().equals((ADMIN_TOKEN)))  // 입력한 키값이 틀릴때
+                throw new CustomException((ErrorCode.INVALIED_AUTHKEY));
+
             if(reqeust.getAuthKey().equals(ADMIN_TOKEN))
                 role = RoleTypeEnum.ADMIN;
         }
@@ -55,7 +59,7 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<Token> login(LoginRequestDto request, HttpServletResponse response) {
+    public ResponseEntity<String> login(LoginRequestDto request, HttpServletResponse response) {
         // 입력한 ID를 기반으로 회원 존재 유무 체크
         User user = userRepository.findByUsername(request.getUsername()).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_NOT_FOUND)
@@ -79,7 +83,7 @@ public class UserService {
         jwtService.setRefreshToken(user, refreshToken);
 
 //        response.addHeader(JwtProvider.AUTHORIZATION_HEADER, accessToken, refreshToken);
-        return ResponseEntity.status(HttpStatus.OK).body(tokenDto);
+        return ResponseEntity.status(HttpStatus.OK).body("로그인 성공");
     }
 
     @Transactional
