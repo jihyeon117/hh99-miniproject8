@@ -1,5 +1,6 @@
 package com.example.hh99miniproject8.config;
 
+import com.example.hh99miniproject8.Redis.RedisUtil;
 import com.example.hh99miniproject8.security.jwt.JwtAuthFilter;
 import com.example.hh99miniproject8.security.jwt.JwtProvider;
 import com.example.hh99miniproject8.security.jwt.JwtService;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,6 +30,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class WebSecurityConfig {
     private final JwtProvider jwtProvider;
     private final JwtService jwtService;
+    private final RedisTemplate redisTemplate;
+    private final RedisUtil redisUtil;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -59,7 +63,9 @@ public class WebSecurityConfig {
                 .anyRequest().authenticated()
 
                 // JwtToken을 인증할 Custom Filter 삽입.
-                .and().addFilterBefore(new JwtAuthFilter(jwtProvider, jwtService), UsernamePasswordAuthenticationFilter.class);
+//                .and().addFilterBefore(new JwtAuthFilter(jwtProvider, jwtService), UsernamePasswordAuthenticationFilter.class);
+                //(수정)
+                .and().addFilterBefore(new JwtAuthFilter(jwtProvider, jwtService, redisUtil, redisTemplate), UsernamePasswordAuthenticationFilter.class);
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         // 세션을 사용하지 않도록 설정.
