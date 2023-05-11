@@ -42,7 +42,7 @@ public class PostService {
     public ResponseEntity<Map<String, List<PostResponseDto>>> listPosts() {
         List<Post> posts = postRepository.findAllByOrderByModifiedAtDesc();
         List<PostResponseDto> postList = new ArrayList<>();
-        for (Post post : posts) {
+        for(Post post : posts) {
             postList.add(new PostResponseDto(post));
         }
 

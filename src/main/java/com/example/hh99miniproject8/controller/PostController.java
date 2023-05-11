@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -22,6 +21,7 @@ import java.util.Map;
 public class PostController {
 
     private final PostService postservice;
+
 
     //게시글 생성 API
     @PostMapping("/posts")
@@ -52,5 +52,4 @@ public class PostController {
     public ResponseEntity<String> deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postservice.deletePost(id, userDetails.getUser());
     }
-
 }

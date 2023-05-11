@@ -41,7 +41,11 @@ dependencies {
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 
-//    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.2'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+//    implementation 'org.springframework.cloud:spring-cloud-starter-aws:3.0.6'
+//    implementation 'org.springframework.cloud:spring-cloud-starter-aws-s3:3.0.6'
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.60'
+    implementation 'com.amazonaws:aws-java-sdk-ec2:1.12.60'
 }
 
 tasks.named('test') {
