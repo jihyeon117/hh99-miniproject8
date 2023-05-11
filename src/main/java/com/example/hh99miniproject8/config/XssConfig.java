@@ -6,17 +6,28 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+
 
 @Slf4j
-@RequiredArgsConstructor
 @Configuration
-// JSON 직렬화에 사용자 지정 HtmlCharacterEscapes 클래스를 사용하도록 ObjectMapper 인스턴스를 설정하는 클래스.
-// Spring MVC 프레임워크에서 JSON 응답을 변환하는 데 사용
-public class WebMvcConfig {
+@RequiredArgsConstructor
+public class XssConfig implements WebMvcConfigurer  {
 
     private final ObjectMapper objectMapper;
 
-    // MappingJackson2HttpMessageConverter의 인스턴스를 반환
+    // Lucy Xss filter 적용(form-data 로 데이터 받을 때)
+//    @Bean
+//    public FilterRegistrationBean<XssEscapeServletFilter> filterRegistrationBean() {
+//        FilterRegistrationBean<XssEscapeServletFilter> filterRegistration = new FilterRegistrationBean<>();
+//        filterRegistration.setFilter(new XssEscapeServletFilter());
+//        filterRegistration.setOrder(1);
+//        filterRegistration.addUrlPatterns("/*");
+//        return filterRegistration;
+//    }
+
+    // JSON xss 필터 적용(JSON 으로 데이터 받을 때)
     @Bean
     public MappingJackson2HttpMessageConverter jsonEscapeConverter() {
         ObjectMapper copy = objectMapper.copy();
