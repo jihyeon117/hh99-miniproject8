@@ -18,11 +18,10 @@ import java.util.Map;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
+@CrossOrigin
 public class PostController {
 
     private final PostService postservice;
-
-    private final
 
     //게시글 생성 API
     @PostMapping("/posts")
@@ -53,6 +52,5 @@ public class PostController {
     public ResponseEntity<String> deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postservice.deletePost(id, userDetails.getUser());
     }
-
 
 }

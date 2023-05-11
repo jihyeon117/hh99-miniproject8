@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -27,6 +28,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class WebSecurityConfig {
     private final JwtProvider jwtProvider;
     private final JwtService jwtService;
+//    private final RedisTemplate redisTemplate;
+//    private final RedisUtil redisUtil;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -49,14 +52,17 @@ public class WebSecurityConfig {
         http.csrf().disable();
 
         // cors 설정!! 이걸 안해놓으면 아래의 corsConfigurationSource()가 적용이 안된다.!!
-        // http.cors();
+        http.cors();
         http.authorizeHttpRequests()
                 //>>>>>>>>>>>>>>>>>>>> 인증을 무시하는 reqeust
                 .requestMatchers("/signup", "/login").permitAll()
+                .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
                 //<<<<<<<<<<<<<<<<<<<< 인증을 받아야하는 request
                 .anyRequest().authenticated()
 
                 // JwtToken을 인증할 Custom Filter 삽입.
+//                .and().addFilterBefore(new JwtAuthFilter(jwtProvider, jwtService), UsernamePasswordAuthenticationFilter.class);
+                //(수정)
                 .and().addFilterBefore(new JwtAuthFilter(jwtProvider, jwtService), UsernamePasswordAuthenticationFilter.class);
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

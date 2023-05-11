@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin
 public class UserController{
     private final UserService userService;
 
@@ -20,7 +21,7 @@ public class UserController{
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Token> login(@RequestBody LoginRequestDto request, HttpServletResponse httpResponse){
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto request, HttpServletResponse httpResponse){
        return userService.login(request, httpResponse);
     }
 }

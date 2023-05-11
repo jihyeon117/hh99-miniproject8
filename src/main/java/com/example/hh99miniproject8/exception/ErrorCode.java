@@ -11,9 +11,10 @@ public enum ErrorCode {
     //400, BAD_REQUEST
     USER_Duplicate(HttpStatus.BAD_REQUEST,"중복된 username 입니다."),
     TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST,"토큰이 유효하지 않습니다."),
-    WRITER_ONLY_MODIFY(HttpStatus.BAD_REQUEST,"작성자만 수정할 수 있습니다."),
-    WRITER_ONLY_DELETE(HttpStatus.BAD_REQUEST,"작성자만 삭제할 수 있습니다."),
+    WRITER_ONLY_MODIFY(HttpStatus.BAD_REQUEST,"수정 권한이 없습니다."),
+    WRITER_ONLY_DELETE(HttpStatus.BAD_REQUEST,"삭제 권한이 없습니다."),
     INVALIED_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
+    INVALIED_AUTHKEY(HttpStatus.BAD_REQUEST, "유효한 토큰 인증키가 아닙니다."),
 
     //404, NOT_FOUND
     USER_NOT_FOUND(HttpStatus.NOT_FOUND,"회원을 찾을 수 없습니다."),
