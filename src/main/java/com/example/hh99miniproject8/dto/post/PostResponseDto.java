@@ -4,6 +4,7 @@ import com.example.hh99miniproject8.dto.comment.CommentResponseDto;
 import com.example.hh99miniproject8.entity.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -24,6 +25,7 @@ public class PostResponseDto {
     private String region;
     private List<CommentResponseDto> comments;
     private int goodCount;
+    private String imageUrl;
 
     public PostResponseDto(Post post) {
         this.id = post.getId();
